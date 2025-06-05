@@ -8,19 +8,33 @@ three$Date <- as.Date(three$Date, "%d/%m/%Y")
 three <- subset(three, Date >= as.Date("2007-2-1") & Date <= as.Date("2007-2-2"))
 
 ## Remove incomplete observation
-two <- two[complete.cases(two),]
+three <- three[complete.cases(three),]
 
 ## Combine Date and Time column
-dateTime <- paste(two$Date, two$Time)
+dateTime <- paste(three$Date, three$Time)
 
 ## Name the vector
 dateTime <- setNames(dateTime, "DateTime")
 
 ## Remove Date and Time column
-two <- two[ ,!(names(two) %in% c("Date","Time"))]
+three <- three[ ,!(names(three) %in% c("Date","Time"))]
 
 ## Add DateTime column
-two <- cbind(dateTime, two)
+three <- cbind(dateTime, three)
 
 ## Format dateTime Column
-two$dateTime <- as.POSIXct(dateTime)
+three$dateTime <- as.POSIXct(dateTime)
+
+## Plot 3
+with(three, {
+  plot(Sub_metering_1~dateTime, type="l",
+       ylab="Global Active Power (kilowatts)", xlab="")
+  lines(Sub_metering_2~dateTime,col='Red')
+  lines(Sub_metering_3~dateTime,col='Blue')
+})
+legend("topright", col=c("black", "red", "blue"), lwd=c(1,1,1), 
+       c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
+
+## Saving Plot 3
+dev.copy(png, file="plot3.png", height=480, width=480)
+dev.off()
